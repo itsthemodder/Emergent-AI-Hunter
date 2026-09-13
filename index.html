@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hunter AI — v1.0.19</title>
+<title>Hunter AI · v1.0.19</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -99,7 +99,7 @@
   section p.tight{margin-top:6px;}
   code{color:var(--gold); background:rgba(255,201,60,.08); padding:1px 5px; border-radius:3px;}
 
-  /* feature grid — overstimulating on purpose */
+  /* feature grid, overstimulating on purpose */
   .fgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:22px;}
   .fchip{
     background:var(--panel); border:1px solid var(--line); border-radius:8px;
@@ -110,7 +110,7 @@
   .fchip:hover{transform:translateY(-2px); border-color:var(--c,var(--ember));}
   .fchip .ic{font-size:16px;}
 
-  /* file structure — softened prose version */
+  /* file structure, softened prose version */
   .flow{
     background:var(--panel); border:1px solid var(--line); border-radius:10px;
     padding:20px 22px; font-size:13.5px; color:var(--dim); margin-top:18px;
@@ -159,7 +159,7 @@
   table{width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;}
   th,td{text-align:left; padding:11px 8px; border-bottom:1px solid var(--line); vertical-align:top;}
   th{color:var(--dim); font-weight:500; font-size:11.5px; text-transform:uppercase;}
-  td.cmd{color:var(--gold); white-space:nowrap; font-weight:600;}
+  td.cmd{color:var(--gold); font-weight:600;}
   td.desc{color:var(--dim);}
   tr:hover td{background:rgba(255,255,255,0.02);}
 
@@ -191,7 +191,7 @@
   <div class="hero">
     <span class="tag"><span class="dot"></span>manhunt behavior pack &middot; bedrock only</span>
     <h1>HunterAI</h1>
-    <p class="lede">Fake players that hunt you down. Spawns SimulatedPlayer bots that path toward real players, gear up, fight back, forage, and talk trash — all script-driven, no Java, no plugin.</p>
+    <p class="lede">Fake players that hunt you down. Spawns SimulatedPlayer bots that path toward real players, gear up, fight back, forage, and talk trash, all script-driven, no Java, no plugin.</p>
     <div class="hero-row">
       <button class="spawn" id="spawnBtn">/spawn<small class="precise">or /ai:spawn</small></button>
       <span class="counter"><b id="hunterCount">0</b> active hunters</span>
@@ -202,7 +202,7 @@
   <section id="overview">
     <div class="eyebrow">the flow</div>
     <h2>One manager, many hunters</h2>
-    <p>The file structure goes something like: <b>main.js</b> runs the tick loop, which calls <b>hunterManager.js</b> to spawn and track bots, which hands each one to <b>hunter.js</b> to decide what it does — pulling logic from a <b>behaviors/</b> folder (combat, pathfinding, survival, gathering, fishing, teleport), with gear handled in <b>gearUtils.js</b> and every tunable number kept in one place, <b>data.js</b>.</p>
+    <p>The file structure goes something like: <b>main.js</b> runs the tick loop, which calls <b>hunterManager.js</b> to spawn and track bots, which hands each one to <b>hunter.js</b> to decide what it does, pulling logic from a <b>behaviors/</b> folder (combat, pathfinding, survival, gathering, fishing, teleport), with gear handled in <b>gearUtils.js</b> and every tunable number kept in one place, <b>data.js</b>.</p>
     <div class="flow">
       <b>main.js</b><span class="arrow">→</span><b>hunterManager.js</b><span class="arrow">→</span><b>hunter.js</b><span class="arrow">→</span><b>behaviors/*</b><span class="arrow">→</span><b>gearUtils.js</b>
     </div>
@@ -244,7 +244,7 @@
   <section id="toggles">
     <div class="eyebrow">interactive &middot; live config</div>
     <h2>Flip the real switches</h2>
-    <p>Same keys and defaults as the shipped <code>settings</code> object. Flip a few, watch the config update — in-game the same switches live in <code>/settings</code><small class="precise" style="display:inline">or /ai:settings</small>, or on the copper torch trigger item.</p>
+    <p>Same keys and defaults as the shipped <code>settings</code> object. Flip a few, watch the config update. In-game the same switches live in <code>/settings</code><small class="precise" style="display:inline">or /ai:settings</small>, or on the copper torch trigger item.</p>
 
     <div class="group-label">combat</div>
     <div id="group-combat"></div>
@@ -261,21 +261,21 @@
   <section id="tuning">
     <div class="eyebrow">interactive &middot; CFG values</div>
     <h2>Tuning, not just on/off</h2>
-    <p>Real numeric constants from <code>data.js</code> — drag to feel what changing them does.</p>
+    <p>Real numeric constants from <code>data.js</code>, drag to feel what changing them does.</p>
 
     <div class="slider-block">
       <div class="slider-head"><span>huntRadius</span><b id="val-hunt">48</b></div>
-      <div class="slider-note">blocks — locks onto the nearest player within this range</div>
+      <div class="slider-note">blocks, locks onto the nearest player within this range</div>
       <input type="range" id="slider-hunt" min="8" max="96" value="48" step="1">
     </div>
     <div class="slider-block">
       <div class="slider-head"><span>callRadius</span><b id="val-call">100</b></div>
-      <div class="slider-note">blocks — allies this close respond to a spotted target</div>
+      <div class="slider-note">blocks, allies this close respond to a spotted target</div>
       <input type="range" id="slider-call" min="20" max="160" value="100" step="5">
     </div>
     <div class="slider-block">
       <div class="slider-head"><span>retreatHealth</span><b id="val-retreat">9</b></div>
-      <div class="slider-note">HP — below this, drop everything and retreat to eat</div>
+      <div class="slider-note">HP, below this it drops everything and retreats to eat</div>
       <input type="range" id="slider-retreat" min="2" max="19" value="9" step="1">
     </div>
     <div class="slider-block">
@@ -291,11 +291,11 @@
     <div class="steps">
       <div class="step">
         <div class="stepnum">1</div>
-        <div class="step-body"><b>Make a world</b><p>New world, survival or creative — ideally superflat, so it's easy to actually watch the bots path and fight.</p></div>
+        <div class="step-body"><b>Make a world</b><p>New world, survival or creative, ideally superflat so it's easy to actually watch the bots path and fight.</p></div>
       </div>
       <div class="step">
         <div class="stepnum">2</div>
-        <div class="step-body"><b>Turn on all experimental toggles</b><p>The pack runs on Beta APIs and GameTest under the hood — safest to just flip every experimental toggle on before creating the world.</p></div>
+        <div class="step-body"><b>Turn on all experimental toggles</b><p>The pack runs on Beta APIs and GameTest under the hood, safest to just flip every experimental toggle on before creating the world.</p></div>
       </div>
       <div class="step">
         <div class="stepnum">3</div>
@@ -303,7 +303,7 @@
       </div>
       <div class="step">
         <div class="stepnum">4</div>
-        <div class="step-body"><b>Load in as an operator</b><p>The commands need Game Directors permission — make sure you're host or have op.</p></div>
+        <div class="step-body"><b>Load in as an operator</b><p>The commands need Game Directors permission, make sure you're host or have op.</p></div>
       </div>
       <div class="step">
         <div class="stepnum">5</div>
