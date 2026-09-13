@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunter AI — v1.0.19</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --void:#0d120e;
+    --panel:#161d17;
+    --line:#293428;
+    --bone:#e9e4d6;
+    --dim:#8a988a;
+    --ember:#c1432f;
+    --ember-dim:#7a2c22;
+    --gold:#c9a227;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--void);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(193,67,47,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(201,162,39,0.05), transparent 60%);
+    color:var(--bone);
+    font-family:'IBM Plex Mono', monospace;
+    line-height:1.6;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    margin:0;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px 120px;}
+  a{color:var(--gold);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 48px;
+    border-bottom:1px solid var(--line);
+  }
+  .tag{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:.04em;
+    color:var(--ember);
+    border:1px solid var(--ember-dim);
+    background:rgba(193,67,47,0.08);
+    padding:4px 10px;
+    border-radius:3px;
+    margin-bottom:22px;
+  }
+  .hero h1{
+    font-size:56px;
+    line-height:1.02;
+    color:var(--bone);
+  }
+  .hero h1 span{color:var(--ember);}
+  .hero p.lede{
+    max-width:52ch;
+    color:var(--dim);
+    font-size:15px;
+    margin-top:18px;
+  }
+  .hero-row{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-top:34px;
+    flex-wrap:wrap;
+  }
+  button.spawn{
+    background:var(--ember);
+    color:#1a0d0a;
+    border:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:14px;
+    padding:13px 22px;
+    border-radius:3px;
+    cursor:pointer;
+    letter-spacing:.02em;
+    transition:transform .08s ease, background .15s ease;
+  }
+  button.spawn:hover{background:#d94f39;}
+  button.spawn:active{transform:scale(.97);}
+  .counter{
+    font-size:14px;
+    color:var(--dim);
+  }
+  .counter b{color:var(--gold); font-size:16px;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:56px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .eyebrow{
+    font-size:12px;
+    color:var(--dim);
+    margin-bottom:10px;
+  }
+  section h2{font-size:26px; margin-bottom:16px;}
+  section p{color:var(--dim); font-size:14.5px; max-width:60ch;}
+  section p.tight{margin-top:6px;}
+
+  /* file tree */
+  .tree{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px 22px;
+    font-size:13px;
+    color:var(--dim);
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .tree .f{color:var(--bone);}
+  .tree .c{color:#5c6b5e; font-style:italic;}
+
+  /* toggles */
+  .group-label{
+    font-size:12px;
+    color:var(--gold);
+    letter-spacing:.03em;
+    margin:30px 0 12px;
+  }
+  .group-label:first-child{margin-top:0;}
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-label{font-size:14px; color:var(--bone);}
+  .toggle-note{font-size:12px; color:var(--dim); margin-top:2px;}
+  .switch{
+    position:relative;
+    width:44px; height:24px;
+    background:#26302a;
+    border:1px solid var(--line);
+    border-radius:999px;
+    cursor:pointer;
+    flex:none;
+    transition:background .15s ease;
+  }
+  .switch.on{background:var(--ember-dim); border-color:var(--ember);}
+  .switch .knob{
+    position:absolute;
+    top:2px; left:2px;
+    width:18px; height:18px;
+    background:var(--dim);
+    border-radius:50%;
+    transition:left .15s ease, background .15s ease;
+  }
+  .switch.on .knob{left:22px; background:var(--ember);}
+
+  /* live config panel */
+  .config{
+    margin-top:26px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px 20px;
+    font-size:12.5px;
+    color:#8fae8a;
+    max-height:180px;
+    overflow-y:auto;
+  }
+  .config .k{color:#5c6b5e;}
+  .config .v-true{color:#8fae8a;}
+  .config .v-false{color:var(--ember);}
+
+  /* sliders */
+  .slider-block{margin:26px 0;}
+  .slider-head{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    color:var(--bone);
+    margin-bottom:4px;
+  }
+  .slider-head b{color:var(--gold); font-weight:600;}
+  .slider-note{font-size:12px; color:var(--dim); margin-bottom:10px;}
+  input[type=range]{
+    -webkit-appearance:none;
+    width:100%;
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--gold);
+    cursor:pointer;
+    border:2px solid #0d120e;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--gold);
+    cursor:pointer;
+    border:2px solid #0d120e;
+  }
+
+  /* commands table */
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:left; padding:10px 8px; border-bottom:1px solid var(--line);}
+  th{color:var(--dim); font-weight:500; font-size:12px;}
+  td.cmd{color:var(--gold); white-space:nowrap;}
+  td.desc{color:var(--dim);}
+  tr:hover td{background:rgba(255,255,255,0.02);}
+
+  .sound-toggle{
+    position:fixed;
+    bottom:20px; right:20px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--dim);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:9px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    z-index:10;
+  }
+  .sound-toggle.muted{color:var(--ember);}
+
+  footer{
+    padding:40px 0 0;
+    color:var(--dim);
+    font-size:12.5px;
+  }
+
+  @media (max-width:600px){
+    .hero{padding:60px 0 36px;}
+    .hero h1{font-size:38px;}
+    section{padding:40px 0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="tag">manhunt behavior pack &middot; bedrock</span>
+    <h1>Hunter<span>AI</span></h1>
+    <p class="lede">Fake players that hunt you down. Hunter AI spawns SimulatedPlayer bots that path toward real players, gear up, fight back, and talk trash while doing it — no Java, no server plugin, just @minecraft/server.</p>
+    <div class="hero-row">
+      <button class="spawn" id="spawnBtn">/ai:spawn</button>
+      <span class="counter"><b id="hunterCount">0</b> active hunters</span>
+    </div>
+  </div>
+
+  <section id="overview">
+    <div class="eyebrow">what it does</div>
+    <h2>One manager, many hunters</h2>
+    <p>A single <code>HunterManager</code> ticks every hunter once per game tick. Each hunter runs the same loop — scan for a target, decide combat vs. gather vs. wander, then act — driven entirely by scripting, with a GameTest structure used only to anchor the bot into the world.</p>
+    <p class="tight">Targeting isn't purely local either: a hunter that spots someone can "call it in," and allies within 100 blocks will beeline toward that last known position instead of hunting blind.</p>
+  </section>
+
+  <section id="filemap">
+    <div class="eyebrow">structure</div>
+    <h2>15 scripts, one job each</h2>
+    <p>No monolith — combat, pathing, gathering, and gear are split into their own files under <code>behaviors/</code>, called from a thin <code>main.js</code> tick loop.</p>
+    <div class="tree" id="fileTree">scripts/
+├── main.js               <span class="c"># tick loop: reload queue, temp placements, manager.tick()</span>
+├── hunterManager.js       <span class="c"># spawns/tracks hunters, death & chat barks</span>
+├── hunter.js              <span class="c"># per-hunter state + decision order</span>
+├── settings.js            <span class="c"># toggle registry + settings UI form</span>
+├── commands.js             <span class="c"># /ai:spawn /ai:despawn /ai:clearall /ai:settings</span>
+├── data.js                <span class="c"># CFG — every tunable number lives here</span>
+├── gearUtils.js            <span class="c"># armor/weapon tiers, hotbar swaps, snapshot/restore</span>
+├── util.js  ·  speech.js  ·  names.js
+└── behaviors/
+    ├── combat.js          <span class="f">509 ln</span>  <span class="c"># targeting, melee, ranged, crystal PvP</span>
+    ├── pathfinding.js     <span class="f">221 ln</span>  <span class="c"># clear-path, bridging, towering</span>
+    ├── survival.js        <span class="f">285 ln</span>  <span class="c"># eating, potions, retreat, respawn</span>
+    ├── gather.js          <span class="f">210 ln</span>  <span class="c"># crop/log/ore foraging</span>
+    ├── teleport.js         <span class="f">87 ln</span>  <span class="c"># catch-up teleport on lost targets</span>
+    └── fishing.js          <span class="f">57 ln</span>  <span class="c"># rod pull-in</span></div>
+  </section>
+
+  <section id="toggles">
+    <div class="eyebrow">interactive &middot; live config</div>
+    <h2>Every behavior is a toggle</h2>
+    <p>These mirror the real <code>settings</code> object shipped in v1.0.19 — same keys, same defaults. Flip a few and watch the config below update. In-game, the same switches live in <code>/ai:settings</code> or on the copper torch trigger item.</p>
+
+    <div class="group-label">combat</div>
+    <div id="group-combat"></div>
+    <div class="group-label">movement &amp; traversal</div>
+    <div id="group-movement"></div>
+    <div class="group-label">survival</div>
+    <div id="group-survival"></div>
+    <div class="group-label">social</div>
+    <div id="group-social"></div>
+
+    <div class="config" id="configOut"></div>
+  </section>
+
+  <section id="tuning">
+    <div class="eyebrow">interactive &middot; CFG values</div>
+    <h2>Tuning, not just on/off</h2>
+    <p>A handful of the real numeric constants from <code>data.js</code> — drag to see what changing them would mean for a hunter's behavior.</p>
+
+    <div class="slider-block">
+      <div class="slider-head"><span>huntRadius</span><b id="val-hunt">48</b></div>
+      <div class="slider-note">blocks — a hunter locks onto the nearest player within this range</div>
+      <input type="range" id="slider-hunt" min="8" max="96" value="48" step="1">
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-head"><span>callRadius</span><b id="val-call">100</b></div>
+      <div class="slider-note">blocks — allies this close respond when another hunter spots a target</div>
+      <input type="range" id="slider-call" min="20" max="160" value="100" step="5">
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-head"><span>retreatHealth</span><b id="val-retreat">9</b></div>
+      <div class="slider-note">HP — below this, a hunter drops everything and retreats to eat</div>
+      <input type="range" id="slider-retreat" min="2" max="19" value="9" step="1">
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-head"><span>teleportDistance</span><b id="val-tp">40</b></div>
+      <div class="slider-note">blocks — how far behind a lost target triggers a catch-up teleport</div>
+      <input type="range" id="slider-tp" min="10" max="80" value="40" step="5">
+    </div>
+  </section>
+
+  <section id="commands">
+    <div class="eyebrow">reference</div>
+    <h2>Custom commands</h2>
+    <table>
+      <tr><th>command</th><th>does</th></tr>
+      <tr><td class="cmd">/ai:spawn</td><td class="desc">spawn hunter(s), optional coords, name, separation</td></tr>
+      <tr><td class="cmd">/ai:despawn</td><td class="desc">remove hunters matching a target selector</td></tr>
+      <tr><td class="cmd">/ai:clearall</td><td class="desc">remove every active hunter</td></tr>
+      <tr><td class="cmd">/ai:settings</td><td class="desc">open the toggle menu (ActionFormData)</td></tr>
+      <tr><td class="cmd">/ai:copypaste</td><td class="desc">clone one entity's gear onto target hunter(s)</td></tr>
+    </table>
+  </section>
+
+  <footer>
+    Hunter AI &middot; manifest v1.0.19 &middot; min_engine_version 1.26.0 &middot; solo project, scripting-only (no resource pack needed — all vanilla textures)
+  </footer>
+
+</div>
+
+<button class="sound-toggle" id="soundToggle">♪ sound on</button>
+
+<script>
+// ---------- tiny synth for UI feedback, no assets needed ----------
+let actx = null;
+let soundOn = true;
+function ctx(){ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); return actx; }
+function blip(freq, dur, type, gain){
+  if(!soundOn) return;
+  const c = ctx();
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = type || 'square';
+  osc.frequency.setValueAtTime(freq, c.currentTime);
+  g.gain.setValueAtTime((gain||0.06), c.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+  osc.connect(g); g.connect(c.destination);
+  osc.start(); osc.stop(c.currentTime + dur);
+}
+const sndOn   = () => blip(660, 0.09, 'square', 0.05);
+const sndOff  = () => blip(220, 0.09, 'square', 0.05);
+const sndTick = () => blip(880, 0.03, 'sine', 0.03);
+const sndSpawn= () => { blip(140,0.15,'sawtooth',0.06); setTimeout(()=>blip(420,0.12,'square',0.05),90); };
+
+document.getElementById('soundToggle').addEventListener('click', function(){
+  soundOn = !soundOn;
+  this.classList.toggle('muted', !soundOn);
+  this.textContent = soundOn ? '♪ sound on' : '♪ sound off';
+});
+
+// ---------- settings, mirroring the real defaults from settings.js ----------
+const SETTINGS = {
+  combat: [
+    ['crystalPvp', 'End crystal PvP', false],
+    ['rangedCombat', 'Ranged combat', true],
+    ['bruteForcePvp', 'Brute force PvP if no food', false],
+    ['attackMonsters', 'Attack monsters', false],
+    ['anchorBlasting', 'Anchor blasting', false],
+    ['strafing', 'Ranged strafing', true],
+    ['shieldBlocking', 'Shield blocking', true],
+  ],
+  movement: [
+    ['clearPath', 'Clear path (break obstructions)', true],
+    ['waterNavigation', 'Water navigation (swim)', true],
+    ['teleportCatchup', 'Teleport catch-up', true],
+    ['fireworkBoost', 'Elytra firework boost', true],
+    ['snowClutch', 'Powdered snow fall clutch', true],
+  ],
+  survival: [
+    ['potionDrinking', 'Potion drinking', true],
+    ['quickPotionDrink', 'Quick potion drink', true],
+    ['fishingRod', 'Fishing rod pull', true],
+    ['cropSearch', 'Crop foraging', false],
+    ['gathering', 'Log/ore finding (+ bridging)', false],
+    ['respawnOnDeath', 'Respawn on death', true],
+    ['keepItems', 'Keep items on respawn', false],
+    ['cleanInventory', 'Drop junk/duplicate gear', true],
+  ],
+  social: [
+    ['chatMessages', 'Messages (death/kill barks)', false],
+    ['chatRespond', 'Respond to health/distance questions', false],
+  ],
+};
+
+const state = {};
+Object.values(SETTINGS).flat().forEach(([key,,def]) => state[key] = def);
+
+function renderGroup(groupKey, containerId){
+  const container = document.getElementById(containerId);
+  SETTINGS[groupKey].forEach(([key, label]) => {
+    const row = document.createElement('div');
+    row.className = 'toggle-row';
+    row.innerHTML = `
+      <div class="toggle-label">${label}</div>
+      <div class="switch ${state[key] ? 'on':''}" data-key="${key}"><div class="knob"></div></div>
+    `;
+    const sw = row.querySelector('.switch');
+    sw.addEventListener('click', () => {
+      state[key] = !state[key];
+      sw.classList.toggle('on', state[key]);
+      state[key] ? sndOn() : sndOff();
+      renderConfig();
+    });
+    container.appendChild(row);
+  });
+}
+renderGroup('combat','group-combat');
+renderGroup('movement','group-movement');
+renderGroup('survival','group-survival');
+renderGroup('social','group-social');
+
+function renderConfig(){
+  const lines = Object.entries(state).map(([k,v]) =>
+    `  <span class="k">${k}:</span> <span class="${v?'v-true':'v-false'}">${v}</span>`
+  );
+  document.getElementById('configOut').innerHTML = 'settings = {<br>' + lines.join(',<br>') + '<br>}';
+}
+renderConfig();
+
+// ---------- sliders ----------
+function wireSlider(id, outId){
+  const el = document.getElementById(id);
+  const out = document.getElementById(outId);
+  el.addEventListener('input', () => { out.textContent = el.value; sndTick(); });
+}
+wireSlider('slider-hunt','val-hunt');
+wireSlider('slider-call','val-call');
+wireSlider('slider-retreat','val-retreat');
+wireSlider('slider-tp','val-tp');
+
+// ---------- hero spawn button ----------
+let count = 0;
+document.getElementById('spawnBtn').addEventListener('click', () => {
+  count++;
+  document.getElementById('hunterCount').textContent = count;
+  sndSpawn();
+});
+</script>
+
+</body>
+</html>
