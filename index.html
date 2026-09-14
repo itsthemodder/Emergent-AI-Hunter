@@ -152,12 +152,24 @@
 
   /* ---------- COMMAND CARDS (duel-row style) ---------- */
   .cmdrow{
-    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
     background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin-top:10px;
   }
   .cmdrow .cname{font-family:'Computer Modern Serif','CMU Serif',Georgia,serif; font-weight:700; font-size:18px; color:var(--bone);}
   .cmdrow .cdesc{font-size:13px; color:var(--dim); margin-top:3px; font-family:'Computer Modern Serif','CMU Serif',Georgia,serif;}
-  .cmdrow .chev{color:var(--yellow); font-size:16px; flex:none;}
+  .cmdrow .example{margin-top:8px; font-size:12px;}
+  .cmdrow .example + .example{margin-top:5px;}
+  .cmdrow .example code{color:var(--lime); background:rgba(242,112,63,.1);}
+  .cmdrow .ex-note{color:var(--dim); font-family:'Computer Modern Serif','CMU Serif',Georgia,serif; font-style:italic; margin-left:6px;}
+  .cmdrow .chev{color:var(--yellow); font-size:16px; flex:none; margin-top:2px;}
+  .cname{display:inline-flex; align-items:center; flex-wrap:wrap;}
+  .copy-btn{
+    background:var(--panel2); border:1px solid var(--line); color:var(--dim); border-radius:6px;
+    font-size:11px; line-height:1; padding:4px 6px; margin-left:7px; cursor:pointer; flex:none;
+    transition:color .12s ease, border-color .12s ease, transform .12s ease;
+  }
+  .copy-btn:hover{color:var(--lime); border-color:var(--lime);}
+  .copy-btn.copied{color:var(--lime); border-color:var(--lime); transform:scale(1.08);}
 
   .sound-toggle{
     position:fixed; bottom:80px; right:16px; background:var(--panel); border:1px solid var(--line); color:var(--dim);
@@ -368,11 +380,11 @@
   <section id="commands">
     <div class="eyebrow">reference</div>
     <h2 class="h2big">Commands</h2>
-    <div class="cmdrow"><div><div class="cname">/spawn<small class="precise">or /ai:spawn</small></div><div class="cdesc">spawn hunter(s), optional coords, name, separation</div></div><div class="chev">▶</div></div>
-    <div class="cmdrow"><div><div class="cname">/despawn<small class="precise">or /ai:despawn</small></div><div class="cdesc">remove hunters matching a target selector</div></div><div class="chev">▶</div></div>
-    <div class="cmdrow"><div><div class="cname">/clearall<small class="precise">or /ai:clearall</small></div><div class="cdesc">remove every active hunter</div></div><div class="chev">▶</div></div>
-    <div class="cmdrow"><div><div class="cname">/settings<small class="precise">or /ai:settings</small></div><div class="cdesc">open the toggle menu in-game</div></div><div class="chev">▶</div></div>
-    <div class="cmdrow"><div><div class="cname">/copypaste<small class="precise">or /ai:copypaste</small></div><div class="cdesc">clone one entity's gear onto target hunter(s)</div></div><div class="chev">▶</div></div>
+    <div class="cmdrow"><div><div class="cname">/spawn<button class="copy-btn" data-copy="/ai:spawn" title="Copy command">📋</button><small class="precise">or /ai:spawn</small></div><div class="cdesc">spawn hunter(s), optional coords, name, separation</div><div class="example"><code>/ai:spawn 3 Reaper ~~~ 5</code><button class="copy-btn" data-copy="/ai:spawn 3 Reaper ~~~ 5" title="Copy example">📋</button><span class="ex-note">(spawns 3 hunters named Reaper, 5 blocks apart)</span></div></div><div class="chev">▶</div></div>
+    <div class="cmdrow"><div><div class="cname">/despawn<button class="copy-btn" data-copy="/ai:despawn" title="Copy command">📋</button><small class="precise">or /ai:despawn</small></div><div class="cdesc">remove hunters matching a target selector</div><div class="example"><code>/ai:despawn @e[name="Reaper"]</code><button class="copy-btn" data-copy='/ai:despawn @e[name="Reaper"]' title="Copy example">📋</button><span class="ex-note">(removes every hunter named Reaper)</span></div></div><div class="chev">▶</div></div>
+    <div class="cmdrow"><div><div class="cname">/clearall<button class="copy-btn" data-copy="/ai:clearall" title="Copy command">📋</button><small class="precise">or /ai:clearall</small></div><div class="cdesc">remove every active hunter</div><div class="example"><code>/ai:clearall</code><button class="copy-btn" data-copy="/ai:clearall" title="Copy example">📋</button><span class="ex-note">(wipes every active hunter, no target needed)</span></div></div><div class="chev">▶</div></div>
+    <div class="cmdrow"><div><div class="cname">/settings<button class="copy-btn" data-copy="/ai:settings" title="Copy command">📋</button><small class="precise">or /ai:settings</small></div><div class="cdesc">open the toggle menu in-game</div><div class="example"><code>/ai:settings</code><button class="copy-btn" data-copy="/ai:settings" title="Copy example">📋</button><span class="ex-note">(opens the same toggle menu shown above, in-game)</span></div></div><div class="chev">▶</div></div>
+    <div class="cmdrow"><div><div class="cname">/copypaste<button class="copy-btn" data-copy="/ai:copypaste" title="Copy command">📋</button><small class="precise">or /ai:copypaste</small></div><div class="cdesc">clone one entity's gear onto target hunter(s)</div><div class="example"><code>/ai:copypaste @s @a[rm=1]</code><button class="copy-btn" data-copy="/ai:copypaste @s @a[rm=1]" title="Copy example">📋</button><span class="ex-note">(copies your gear to all hunters/players)</span></div><div class="example"><code>/structure load gear_op ~~~</code><button class="copy-btn" data-copy="/structure load gear_op ~~~" title="Copy example">📋</button><span class="ex-note">(gives you full hunter gear, then combine with /copypaste)</span></div></div><div class="chev">▶</div></div>
   </section>
 
   <footer>
@@ -506,6 +518,37 @@ document.getElementById('spawnBtn').addEventListener('click', () => {
   count++;
   document.getElementById('hunterCount').textContent = count;
   sndSpawn();
+});
+
+/* copy-to-clipboard buttons on every command name and example */
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const text = btn.getAttribute('data-copy');
+    const done = () => {
+      sndTick();
+      const original = btn.textContent;
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1100);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(() => { fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  });
 });
 
 /* tab + bottom nav active state, with smooth scroll and a nav blip */
